@@ -32,7 +32,7 @@ export default async function HomePage() {
   return (
     <div className="home">
       <Homebanner data={posts} />
-      <ServiceFeatures />
+      <ServiceFeatures data={posts} />
       <NewArrivalGrid />
       <CategoryGrid items={categoryMock} />
       <PopularGrid />
