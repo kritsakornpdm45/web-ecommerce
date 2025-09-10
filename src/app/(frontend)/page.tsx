@@ -16,12 +16,32 @@ import NewArrivalGrid from '@/components/Newarrival'
 import CategoryGrid from '@/components/Category'
 import PopularGrid from '@/components/PopularProduct'
 
-import { categoryMock } from '@/utils/category'
-
 export default async function HomePage() {
   const payload = await getPayload({ config: configPromise })
+
+  //Fetch homePage data
   const posts = await payload.findGlobal({
     slug: 'homePage',
+    depth: 1,
+  })
+  //Fetch catagory data
+  const catagoriesGrid = await payload.find({
+    collection: 'product-categories',
+    depth: 1,
+  })
+
+  //Fetch newest products 4 latest products
+  const newArrivals = await payload.find({
+    collection: 'products',
+    where: {
+      and: [
+        { _status: { equals: 'published' } },
+        { isActive: { equals: true } },
+        { publishedAt: { exists: true } },
+      ],
+    },
+    sort: ['-publishedAt', '-createdAt'],
+    limit: 4,
     depth: 1,
   })
   // const headers = await getHeaders()
@@ -33,8 +53,8 @@ export default async function HomePage() {
     <div className="home">
       <Homebanner data={posts} />
       <ServiceFeatures data={posts} />
-      <NewArrivalGrid />
-      <CategoryGrid items={categoryMock} />
+      <NewArrivalGrid data={newArrivals} />
+      <CategoryGrid data={catagoriesGrid} />
       <PopularGrid />
       <Footer />
       <h1 className="text-amber-400">Welcome to Payload + Next.js</h1>

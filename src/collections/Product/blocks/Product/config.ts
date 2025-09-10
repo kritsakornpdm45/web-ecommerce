@@ -92,14 +92,23 @@ export const Products: CollectionConfig = {
               max: 5,
             },
             {
+              name: 'soldCount',
+              type: 'number',
+              label: 'Sold Count',
+              defaultValue: 0,
+            },
+            {
               name: 'categories',
               type: 'relationship',
               relationTo: 'product-categories',
               hasMany: true,
               //fix query with Where type der
-              // filterOptions: ({ id }): Where | boolean => {
-              //   if (!id) return true
-              //   return { id: { not_in: [id] } }
+              // filterOptions: ({ id }) => {
+              //   return {
+              //     id: {
+              //       not_in: [id],
+              //     },
+              //   }
               // },
               filterOptions: (): Where | boolean => ({ isActive: { equals: true } }),
               required: true,

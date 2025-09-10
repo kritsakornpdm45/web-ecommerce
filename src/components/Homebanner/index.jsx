@@ -17,7 +17,6 @@ const Homebanner = ({data}) => {
     buttonLink,
   } = data
 
-  console.log(data)
   return (
     <header className="relative min-h-screen md:min-h-[42rem] overflow-hidden bg-gray-100">
       {/* Background Image with padding */}

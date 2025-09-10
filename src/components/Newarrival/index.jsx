@@ -1,23 +1,26 @@
+import React from 'react'
 import ItemCard from '../Itemcard'
-import { items } from '@/utils/newarrive'
+import { it } from 'node:test'
 
-export default function NewArrivalGrid() {
+export default function NewArrivalGrid({ data }) {
+  const items = data?.docs || []
+  console.log(items,"items new arrival")
   return (
     <div className="w-full h-full sm:h-[768px] mt-12 sm:mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-8 text-center">
-          NEW ARRIVALS
+          NEW ARRIVAL
         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4  md:gap-6">
-          {items.map((item, index) => (
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:gap-6">
+          {items.map(({ name, price, originalPrice, rating, imageList }, index) => (
             <ItemCard
               key={index}
-              name={item.name}
-              price={item.price}
-              originalPrice={item.originalPrice} // Pass undefined if not present
-              rating={item.rating}
-              image={item.image}
+              name={name}
+              price={price}
+              originalPrice={originalPrice}
+              rating={rating}
+              image={imageList[0].image.url}
             />
           ))}
         </div>

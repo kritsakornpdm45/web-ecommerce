@@ -217,6 +217,7 @@ export interface Product {
   price: number;
   originalPrice?: number | null;
   rating?: number | null;
+  soldCount?: number | null;
   /**
    * Select product categories
    */
@@ -485,6 +486,7 @@ export interface ProductsSelect<T extends boolean = true> {
   price?: T;
   originalPrice?: T;
   rating?: T;
+  soldCount?: T;
   categories?: T;
   description?: T;
   features?:
