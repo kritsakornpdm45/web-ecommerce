@@ -34,22 +34,21 @@ export default function ItemCard({
         </div>
       </div>
 
-      {/* ส่วนล่าง: ข้อความ (ไม่ขยาย) */}
-      <h3 className="font-medium font-primary text-lg mb-1">{name}</h3>
+      <h3 className="font-medium font-primary text-sm md:text-lg mb-1">{name}</h3>
 
       <div className="mb-2">
         <StarRating rating={rating} />
       </div>
 
       <div className="flex items-center">
-        <p className="font-bold font-primary text-lg">${price}</p>
+        <p className="font-bold font-primary text-sm md:text-lg">${price}</p>
         {originalPrice !== null && (
-          <p className="font-primary font-bold text-gray-400 line-through ml-2">${originalPrice}</p>
+          <p className="font-primary font-bold text-sm md:text-lg text-gray-400 line-through ml-2">
+            ${originalPrice}
+          </p>
         )}
         {showDiscountTag && discountPercent !== null && (
-          <p className="bg-red-100 text-red-500 text-xs px-2 py-1 ml-2 rounded-md">
-            -{discountPercent}%
-          </p>
+          <p className="bg-red-100 text-red-500 text-xs p-1 ml-2 rounded-md">-{discountPercent}%</p>
         )}
       </div>
     </div>

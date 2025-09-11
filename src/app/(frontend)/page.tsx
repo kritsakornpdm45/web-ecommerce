@@ -8,7 +8,6 @@ import configPromise from '@payload-config'
 
 // import config from '@/payload.config'
 import './styles.css'
-import Footer from '@/components/Footer'
 
 import Homebanner from '@/components/Homebanner'
 import ServiceFeatures from '@/components/Feature'
@@ -44,6 +43,18 @@ export default async function HomePage() {
     limit: 4,
     depth: 1,
   })
+
+  const popularProducts = await payload.find({
+    collection: 'products',
+    where: {
+      isActive: {
+        equals: true,
+      },
+    },
+    sort: ['-soldCount'],
+    depth: 1,
+    limit: 4,
+  })
   // const headers = await getHeaders()
   // const payloadConfig = await config
 
@@ -55,9 +66,7 @@ export default async function HomePage() {
       <ServiceFeatures data={posts} />
       <NewArrivalGrid data={newArrivals} />
       <CategoryGrid data={catagoriesGrid} />
-      <PopularGrid />
-      <Footer />
-      <h1 className="text-amber-400">Welcome to Payload + Next.js</h1>
+      <PopularGrid data={popularProducts} />
     </div>
   )
 }

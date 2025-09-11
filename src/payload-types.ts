@@ -93,10 +93,12 @@ export interface Config {
   globals: {
     header: Header;
     homePage: HomePage;
+    footer: Footer;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     homePage: HomePageSelect<false> | HomePageSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
   };
   locale: null;
   user: User & {
@@ -623,6 +625,55 @@ export interface HomePage {
   createdAt?: string | null;
 }
 /**
+ * Footer configuration (brand, newsletter, links, payments, social).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  brand: {
+    name: string;
+    description: string;
+  };
+  newsletter: {
+    title: string;
+    placeholder: string;
+    buttonText: string;
+  };
+  socialIcons?:
+    | {
+        name: string;
+        icon: number | Media;
+        href?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  paymentMethods?:
+    | {
+        name: string;
+        icon: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  footerSections?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              href?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  copyright: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
@@ -657,6 +708,57 @@ export interface HomePageSelect<T extends boolean = true> {
         featDesc?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  brand?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+      };
+  newsletter?:
+    | T
+    | {
+        title?: T;
+        placeholder?: T;
+        buttonText?: T;
+      };
+  socialIcons?:
+    | T
+    | {
+        name?: T;
+        icon?: T;
+        href?: T;
+        id?: T;
+      };
+  paymentMethods?:
+    | T
+    | {
+        name?: T;
+        icon?: T;
+        id?: T;
+      };
+  footerSections?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  copyright?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

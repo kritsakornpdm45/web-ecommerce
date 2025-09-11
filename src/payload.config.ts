@@ -12,6 +12,7 @@ import { Media } from './collections/Media'
 import { header } from './globals/header/config'
 import { home } from './globals/HomePage/config'
 import { ProductCategories, Products } from './collections/Product'
+import { Footer } from './globals/Footer/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -24,7 +25,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, ProductCategories, Products],
-  globals: [header, home],
+  globals: [header, home, Footer],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
