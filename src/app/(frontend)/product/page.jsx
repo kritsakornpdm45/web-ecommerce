@@ -1,7 +1,7 @@
 import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import ProductPage from '@/components/Products/index.jsx'
+import ProductPage from '@/components/Products/index.tsx'
 
 export default async function ProductListingPage() {
   const payload = await getPayload({ config: configPromise })

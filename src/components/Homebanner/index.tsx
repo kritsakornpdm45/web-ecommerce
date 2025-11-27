@@ -1,12 +1,23 @@
-
-
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-// ตัวอย่าง background (สามารถเปลี่ยนเป็น dynamic ในอนาคต)
+interface HomeBannerData {
+  homeBannerImage?: {
+    url: string
+    alt: string
+  }
+  mainTitle?: string
+  subTitle?: string
+  buttonText?: string
+  buttonLink?: string
+}
 
-const Homebanner = ({data}) => {
+interface HomebannerProps {
+  data?: HomeBannerData
+}
+
+const Homebanner = ({ data }: HomebannerProps) => {
   if (!data) return null
 
   const {
@@ -22,13 +33,16 @@ const Homebanner = ({data}) => {
       {/* Background Image with padding */}
       <div className="absolute inset-0 z-0 p-1 md:p-8">
         <div className="w-full h-full relative rounded-lg overflow-hidden">
-          <Image
-            src={homeBannerImage.url}
-            alt={homeBannerImage.alt}
-            fill
-            className="object-cover rounded-lg"
-            priority
-          />
+          {homeBannerImage?.url && (
+            <Image
+              src={homeBannerImage.url}
+              alt={homeBannerImage.alt || 'Banner Image'}
+              fill
+              className="object-cover rounded-lg"
+              priority
+              sizes="100vw"
+            />
+          )}
           <div className="absolute inset-0 bg-black/40 rounded-lg" />
         </div>
       </div>
@@ -42,12 +56,14 @@ const Homebanner = ({data}) => {
           <p className="text-base md:text-lg max-w-xl mx-auto drop-shadow-md">
             {subTitle}
           </p>
-          <Link
-            href={buttonLink}
-            className="inline-block px-6 py-3 bg-white text-black font-medium rounded-full text-sm md:text-base hover:bg-gray-200 transition-colors"
-          >
-            {buttonText}
-          </Link>
+          {buttonLink && (
+            <Link
+              href={buttonLink}
+              className="inline-block px-6 py-3 bg-white text-black font-medium rounded-full text-sm md:text-base hover:bg-gray-200 transition-colors"
+            >
+              {buttonText || 'Shop Now'}
+            </Link>
+          )}
         </div>
       </div>
     </header>

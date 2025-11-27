@@ -2,7 +2,21 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function CategoryGrid({ data, className = "" }) {
+interface Category {
+  id: string
+  name: string
+  slug: string
+  image?: string | { url: string }
+}
+
+interface CategoryGridProps {
+  data?: {
+    docs?: Category[]
+  }
+  className?: string
+}
+
+export default function CategoryGrid({ data, className = "" }: CategoryGridProps) {
   const items = data?.docs || [];
 
   return (
@@ -29,8 +43,15 @@ export default function CategoryGrid({ data, className = "" }) {
   );
 }
 
-function CategoryCard({ id, title, href, image }) {
-  const imageUrl = typeof image === "object" && image?.url ? image.url : image;
+interface CategoryCardProps {
+  id: string
+  title: string
+  href: string
+  image?: string | { url: string }
+}
+
+function CategoryCard({ id, title, href, image }: CategoryCardProps) {
+  const imageUrl = typeof image === "object" && image?.url ? image.url : (image as string);
 
   return (
     <div
@@ -46,7 +67,6 @@ function CategoryCard({ id, title, href, image }) {
           fill
           className="object-contain"
           sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
-          priority
         />
       </div>
 

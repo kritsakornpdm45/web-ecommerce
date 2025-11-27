@@ -1,7 +1,21 @@
 import React from 'react'
 import ItemCard from '../Itemcard'
 
-export default function NewArrivalGrid({ data }) {
+interface Product {
+  name: string
+  price: number
+  originalPrice?: number
+  rating?: number
+  imageList: { image: { url: string } }[]
+}
+
+interface NewArrivalGridProps {
+  data?: {
+    docs?: Product[]
+  }
+}
+
+export default function NewArrivalGrid({ data }: NewArrivalGridProps) {
   const items = data?.docs || []
   return (
     <div className="w-full h-full sm:h-[768px] mt-12 sm:mt-20">
@@ -18,7 +32,7 @@ export default function NewArrivalGrid({ data }) {
               price={price}
               originalPrice={originalPrice}
               rating={rating}
-              image={imageList[0].image.url}
+              image={imageList?.[0]?.image?.url}
             />
           ))}
         </div>

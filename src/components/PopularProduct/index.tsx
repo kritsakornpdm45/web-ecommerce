@@ -1,8 +1,21 @@
 import React from 'react'
 import ItemCard from '../Itemcard'
 
+interface Product {
+  name: string
+  price: number
+  originalPrice?: number
+  rating?: number
+  imageList: { image: { url: string } }[]
+}
 
-export default function PopularGrid({data}) {
+interface PopularGridProps {
+  data?: {
+    docs?: Product[]
+  }
+}
+
+export default function PopularGrid({ data }: PopularGridProps) {
    const items = data?.docs || []
    return (
      <div className="w-full h-full sm:h-[768px] mt-12 sm:mt-20">
@@ -19,7 +32,7 @@ export default function PopularGrid({data}) {
                price={price}
                originalPrice={originalPrice}
                rating={rating}
-               image={imageList[0].image.url}
+               image={imageList?.[0]?.image?.url}
              />
            ))}
          </div>
@@ -37,4 +50,3 @@ export default function PopularGrid({data}) {
      </div>
    )
  }
- 

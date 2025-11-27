@@ -2,33 +2,55 @@
 import React, { useState, useMemo } from 'react'
 import { Star, ShoppingCart, Heart, Filter } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
+import Image from 'next/image'
 
-const ProductCard = React.memo(({ product }) => {
+interface Product {
+  id: string
+  name: string
+  price: number
+  originalPrice?: number
+  rating?: number
+  categories?: { id: string }[]
+  imageList?: { image: { url: string } }[]
+}
+
+interface Category {
+  id: string
+  name: string
+  count?: number
+}
+
+interface ProductCardProps {
+  product: Product
+}
+
+const ProductCard = React.memo(({ product }: ProductCardProps) => {
   const { addToCart } = useCart()
 
   const imageUrl =
     product.imageList?.[0]?.image?.url || 'https://placehold.co/400x400/f1f1f1/b0b0b0?text=No+Image'
 
   const handleAddToCart = () => {
-    addToCart(product)
+    addToCart(product as any) // Cast to any if CartContext expects a slightly different type, or fix CartContext type
   }
 
   return (
     <div className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:border-black">
-      <div className="relative overflow-hidden bg-gray-100">
-        <img
+      <div className="relative overflow-hidden bg-gray-100 aspect-square">
+        <Image
           src={imageUrl}
           alt={product.name}
-          loading="lazy"
-          className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-500"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        <button className="absolute top-4 right-4 p-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100">
+        <button className="absolute top-4 right-4 p-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 z-10">
           <Heart className="w-5 h-5 text-gray-700" />
         </button>
       </div>
 
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-black mb-2 group-hover:text-gray-700 transition">
+        <h3 className="text-lg font-semibold text-black mb-2 group-hover:text-gray-700 transition line-clamp-1">
           {product.name}
         </h3>
 
@@ -39,7 +61,7 @@ const ProductCard = React.memo(({ product }) => {
                 <Star
                   key={i}
                   className={`w-4 h-4 ${
-                    i < Math.floor(product.rating) ? 'fill-black text-black' : 'text-gray-300'
+                    i < Math.floor(product.rating || 0) ? 'fill-black text-black' : 'text-gray-300'
                   }`}
                 />
               ))}
@@ -75,10 +97,15 @@ const ProductCard = React.memo(({ product }) => {
 
 ProductCard.displayName = 'ProductCard'
 
+interface ProductPageProps {
+  initialProducts: { docs: Product[] }
+  allCategories: { docs: Category[] }
+}
+
 export default function ProductPage({
   initialProducts: initialProductsData,
   allCategories: allCategoriesData,
-}) {
+}: ProductPageProps) {
   const initialProducts = initialProductsData?.docs || []
   const allCategories = allCategoriesData?.docs || []
 
@@ -94,7 +121,7 @@ export default function ProductPage({
   // Combined memoization - calculate everything in one pass
   const { categoriesForDisplay, sortedProducts } = useMemo(() => {
     // Calculate product counts
-    const counts = {}
+    const counts: Record<string, number> = {}
     for (const product of initialProducts) {
       if (Array.isArray(product.categories)) {
         for (const cat of product.categories) {
@@ -126,7 +153,7 @@ export default function ProductPage({
 
     // Filter by price range
     const priceFiltered = filtered.filter((product) => {
-      const price = parseFloat(product.price) || 0
+      const price = Number(product.price) || 0
       const hasAnyRangeSelected = Object.values(priceRanges).some((v) => v)
 
       if (!hasAnyRangeSelected) return true
@@ -144,15 +171,15 @@ export default function ProductPage({
     switch (sortBy) {
       case 'price-low':
         sorted.sort((a, b) => {
-          const priceA = parseFloat(a.price) || 0
-          const priceB = parseFloat(b.price) || 0
+          const priceA = Number(a.price) || 0
+          const priceB = Number(b.price) || 0
           return priceA - priceB
         })
         break
       case 'price-high':
         sorted.sort((a, b) => {
-          const priceA = parseFloat(a.price) || 0
-          const priceB = parseFloat(b.price) || 0
+          const priceA = Number(a.price) || 0
+          const priceB = Number(b.price) || 0
           return priceB - priceA
         })
         break
