@@ -28,6 +28,7 @@ export default function ItemCard({
             src={imageUrl || '/placeholder.png'}
             alt={name}
             fill
+            loading="lazy"
             className="object-contain rounded-3xl"
             sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
           />

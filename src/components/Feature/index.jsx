@@ -15,6 +15,7 @@ const ServiceFeatures = ({ data }) => {
                 <Image
                   src={feature.featuresImage.url}
                   alt={feature.featuresImage.alt || feature.featTitle || "Feature icon"}
+                  loading="lazy"
                   fill
                   className="object-contain"
                 />

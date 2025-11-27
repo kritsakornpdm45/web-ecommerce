@@ -1,44 +1,24 @@
-'use client'
-import React, { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Search, CircleUserRound, ShoppingCart } from 'lucide-react'
 
-type Props = {
-  data: any
-  baseUrl?: string
-  className?: string
-}
-
-type NavItem = { key: string; label: string; url: string }
+"use client";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { CircleUserRound, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/context/CartContext'; 
 
 /* ----------------------------- helpers ----------------------------- */
-const DEFAULT_LINKS = { cart: '/cart', search: '/search', signin: '/signin' }
+const DEFAULT_LINKS = { cart: '/cart', signin: '/signin' };
 
-const resolveSrc = (url?: string, baseUrl?: string) => {
-  if (!url) return ''
-  return url.startsWith('http') ? url : `${baseUrl ?? ''}${url}`
-}
-
-const mapNav = (list: any[]): NavItem[] =>
-  (Array.isArray(list) ? list : []).map((n: any, i: number) => ({
+const mapNav = (list) =>
+  (Array.isArray(list) ? list : []).map((n, i) => ({
     key: String(n?.id ?? n?.path ?? n?.url ?? i),
     label: String(n?.text ?? '').trim(),
     url: String(n?.path ?? n?.url ?? '#'),
-  }))
+  }));
 
 /* --------------------------- sub-components --------------------------- */
-function MobileMenu({
-  nav,
-  open,
-  onToggle,
-  onClose,
-}: {
-  nav: NavItem[]
-  open: boolean
-  onToggle: () => void
-  onClose: () => void
-}) {
+function MobileMenu({ nav, open, onToggle, onClose }) {
   return (
     <div className="mr-2 block md:hidden">
       <button
@@ -75,59 +55,53 @@ function MobileMenu({
         </div>
       )}
     </div>
-  )
+  );
 }
 
-function DesktopNav({ nav }: { nav: NavItem[] }) {
-  if (nav.length === 0) return null
+function DesktopNav({ nav, currentPath }) {
+  if (nav.length === 0) return null;
   return (
-    <nav className="mr-2 hidden md:flex lg:mr-7">
+    <nav className="flex-1 hidden md:flex md:justify-center lg:justify-start">
       <ul className="flex items-center space-x-1">
-        {nav.map((item) => (
-          <li key={item.key}>
-            <Link
-              href={item.url}
-              className="block rounded px-3 py-2 font-medium text-gray-700 transition-all hover:bg-gray-50 hover:text-black"
-            >
-              {item.label}
-            </Link>
-          </li>
-        ))}
+        {nav.map((item) => {
+          const isActive = currentPath === item.url;
+          return (
+            <li key={item.key}>
+              <Link
+                href={item.url}
+                className={`block rounded px-3 py-2 font-medium transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black after:transition-transform after:duration-300 ${
+                  isActive
+                    ? 'text-black after:scale-x-100'
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-black after:scale-x-0 hover:after:scale-x-100'
+                }`}
+              >
+                {item.label}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </nav>
-  )
+  );
 }
 
-function SearchBar() {
-  return (
-    <div className="mr-3 hidden max-w-sm flex-1 items-center rounded-full bg-gray-100 px-4 py-2 transition-colors hover:bg-gray-200 md:flex lg:mr-10">
-      <Search className="h-5 w-5 text-gray-500" aria-hidden="true" />
-      <input
-        type="search"
-        placeholder="Search for products..."
-        className="ml-2 flex-1 bg-transparent outline-none placeholder:text-gray-500"
-      />
-    </div>
-  )
-}
+function Actions({ links }) {
+  const { cart } = useCart();
+  const cartCount = cart.reduce((total, item) => total + item.qty, 0);
 
-function Actions({ links }: { links: typeof DEFAULT_LINKS }) {
   return (
-    <div className="ml-auto flex items-center">
-      <Link
-        href={links.search}
-        aria-label="Open search"
-        className="mr-4 block rounded p-1 transition-colors hover:bg-gray-100 md:hidden"
-      >
-        <Search className="h-5 w-5 text-gray-500" aria-hidden="true" />
-      </Link>
-
+    <div className="flex items-center flex-shrink-0">
       <Link
         href={links.cart}
         aria-label="Cart"
         className="relative mr-3 rounded p-1 transition-colors hover:bg-gray-100"
       >
         <ShoppingCart className="h-5 w-5 text-gray-700" aria-hidden="true" />
+        {cartCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-black text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+            {cartCount}
+          </span>
+        )}
       </Link>
 
       <Link
@@ -138,16 +112,17 @@ function Actions({ links }: { links: typeof DEFAULT_LINKS }) {
         <CircleUserRound className="h-5 w-5 text-gray-700" aria-hidden="true" />
       </Link>
     </div>
-  )
+  );
 }
 
 /* --------------------------------- main --------------------------------- */
-export default function TopNavbar({ data, baseUrl, className = '' }: Props) {
-  const [menuOpen, setMenuOpen] = useState(false)
+export default function TopNavbar({ data, className = '' }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
-  const logoSrc = resolveSrc(data?.logoPicture1?.url, baseUrl) || '/logo.svg'
-  const nav = mapNav(data?.navigationLinks)
-  const links = DEFAULT_LINKS
+  const logoSrc = data?.logoPicture1?.url || '/logo.svg';
+  const nav = mapNav(data?.navigationLinks);
+  const links = DEFAULT_LINKS;
 
   return (
     <nav className={`sticky top-0 z-20 bg-white shadow-sm ${className}`}>
@@ -166,10 +141,9 @@ export default function TopNavbar({ data, baseUrl, className = '' }: Props) {
           </Link>
         </div>
 
-        <DesktopNav nav={nav} />
-        <SearchBar />
+        <DesktopNav nav={nav} currentPath={pathname} />
         <Actions links={links} />
       </div>
     </nav>
-  )
+  );
 }

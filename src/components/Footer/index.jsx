@@ -9,7 +9,6 @@ const getSrc = (img, fallback = '') =>
 
 const toLinks = (links) => {
   if (!Array.isArray(links)) return []
-  // รองรับทั้ง string[] และ [{label, href}]
   return typeof links[0] === 'string'
     ? links.map((label) => ({ label }))
     : links
@@ -106,10 +105,7 @@ SocialLinks.propTypes = {
   icons: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
-      icon: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({ url: PropTypes.string }),
-      ]),
+      icon: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({ url: PropTypes.string })]),
       src: PropTypes.string,
       href: PropTypes.string,
     })
@@ -208,10 +204,7 @@ PaymentMethods.propTypes = {
   methods: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
-      icon: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({ url: PropTypes.string }),
-      ]),
+      icon: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({ url: PropTypes.string })]),
       src: PropTypes.string,
     })
   ),
@@ -245,14 +238,14 @@ export default function Footer({ data }) {
   } = data || {}
 
   return (
-    <div className="relative pt-24">
+    <div className="relative pt-24 mb-16"> {/* Added bottom margin here */}
       <NewsletterSection
         title={newsletter?.title}
         placeholder={newsletter?.placeholder}
         buttonText={newsletter?.buttonText}
       />
 
-      <footer className="w-full bg-gray-100 pt-24 pb-12">
+      <footer className="w-full bg-gray-100 pt-32 pb-12"> {/* Increased top padding */}
         <div className="max-w-7xl mx-auto px-4 mt-12">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
             <BrandSection brand={brand} socialIcons={socialIcons} />
