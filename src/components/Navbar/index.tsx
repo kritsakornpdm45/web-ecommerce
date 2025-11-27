@@ -1,24 +1,36 @@
-
-"use client";
-import React, { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { CircleUserRound, ShoppingCart } from 'lucide-react';
-import { useCart } from '@/context/CartContext'; 
+'use client'
+import React, { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { CircleUserRound, ShoppingCart } from 'lucide-react'
+import { useCart } from '@/context/CartContext'
 
 /* ----------------------------- helpers ----------------------------- */
-const DEFAULT_LINKS = { cart: '/cart', signin: '/signin' };
+const DEFAULT_LINKS = { cart: '/cart', signin: '/signin' }
 
-const mapNav = (list) =>
+interface NavItem {
+  key: string
+  label: string
+  url: string
+}
+
+const mapNav = (list: any[]): NavItem[] =>
   (Array.isArray(list) ? list : []).map((n, i) => ({
     key: String(n?.id ?? n?.path ?? n?.url ?? i),
     label: String(n?.text ?? '').trim(),
     url: String(n?.path ?? n?.url ?? '#'),
-  }));
+  }))
 
 /* --------------------------- sub-components --------------------------- */
-function MobileMenu({ nav, open, onToggle, onClose }) {
+interface MobileMenuProps {
+  nav: NavItem[]
+  open: boolean
+  onToggle: () => void
+  onClose: () => void
+}
+
+function MobileMenu({ nav, open, onToggle, onClose }: MobileMenuProps) {
   return (
     <div className="mr-2 block md:hidden">
       <button
@@ -55,16 +67,21 @@ function MobileMenu({ nav, open, onToggle, onClose }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-function DesktopNav({ nav, currentPath }) {
-  if (nav.length === 0) return null;
+interface DesktopNavProps {
+  nav: NavItem[]
+  currentPath: string
+}
+
+function DesktopNav({ nav, currentPath }: DesktopNavProps) {
+  if (nav.length === 0) return null
   return (
     <nav className="flex-1 hidden md:flex md:justify-center lg:justify-start">
       <ul className="flex items-center space-x-1">
         {nav.map((item) => {
-          const isActive = currentPath === item.url;
+          const isActive = currentPath === item.url
           return (
             <li key={item.key}>
               <Link
@@ -78,16 +95,20 @@ function DesktopNav({ nav, currentPath }) {
                 {item.label}
               </Link>
             </li>
-          );
+          )
         })}
       </ul>
     </nav>
-  );
+  )
 }
 
-function Actions({ links }) {
-  const { cart } = useCart();
-  const cartCount = cart.reduce((total, item) => total + item.qty, 0);
+interface ActionsProps {
+  links: { cart: string; signin: string }
+}
+
+function Actions({ links }: ActionsProps) {
+  const { cart } = useCart()
+  const cartCount = cart.reduce((total, item) => total + item.qty, 0)
 
   return (
     <div className="flex items-center flex-shrink-0">
@@ -112,17 +133,22 @@ function Actions({ links }) {
         <CircleUserRound className="h-5 w-5 text-gray-700" aria-hidden="true" />
       </Link>
     </div>
-  );
+  )
 }
 
 /* --------------------------------- main --------------------------------- */
-export default function TopNavbar({ data, className = '' }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const pathname = usePathname();
+interface TopNavbarProps {
+  data?: any
+  className?: string
+}
 
-  const logoSrc = data?.logoPicture1?.url || '/logo.svg';
-  const nav = mapNav(data?.navigationLinks);
-  const links = DEFAULT_LINKS;
+export default function TopNavbar({ data, className = '' }: TopNavbarProps) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const pathname = usePathname()
+
+  const logoSrc = data?.logoPicture1?.url || '/logo.svg'
+  const nav = mapNav(data?.navigationLinks)
+  const links = DEFAULT_LINKS
 
   return (
     <nav className={`sticky top-0 z-20 bg-white shadow-sm ${className}`}>
@@ -145,5 +171,5 @@ export default function TopNavbar({ data, className = '' }) {
         <Actions links={links} />
       </div>
     </nav>
-  );
+  )
 }

@@ -1,13 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Image from 'next/image'
 import Link from 'next/link'
 
 /* ---------------- helpers ---------------- */
-const getSrc = (img, fallback = '') =>
+const getSrc = (img: any, fallback = ''): string =>
   typeof img === 'string' ? img : (img && img.url) || fallback
 
-const toLinks = (links) => {
+const toLinks = (links: any[]): { label: string; href?: string }[] => {
   if (!Array.isArray(links)) return []
   return typeof links[0] === 'string'
     ? links.map((label) => ({ label }))
@@ -15,7 +14,12 @@ const toLinks = (links) => {
 }
 
 /* ---------------- sub-components ---------------- */
-function NewsletterForm({ placeholder, buttonText }) {
+interface NewsletterFormProps {
+  placeholder?: string
+  buttonText?: string
+}
+
+function NewsletterForm({ placeholder, buttonText }: NewsletterFormProps) {
   return (
     <div className="w-full md:w-auto">
       <div className="flex flex-col gap-3 w-full">
@@ -33,12 +37,13 @@ function NewsletterForm({ placeholder, buttonText }) {
   )
 }
 
-NewsletterForm.propTypes = {
-  placeholder: PropTypes.string,
-  buttonText: PropTypes.string,
+interface NewsletterSectionProps {
+  title?: string
+  placeholder?: string
+  buttonText?: string
 }
 
-function NewsletterSection({ title, placeholder, buttonText }) {
+function NewsletterSection({ title, placeholder, buttonText }: NewsletterSectionProps) {
   const text = title || 'STAY UP TO DATE ABOUT OUR LATEST OFFERS'
   const words = text.split(' ')
   const mid = Math.floor(words.length / 2)
@@ -68,13 +73,18 @@ function NewsletterSection({ title, placeholder, buttonText }) {
   )
 }
 
-NewsletterSection.propTypes = {
-  title: PropTypes.string,
-  placeholder: PropTypes.string,
-  buttonText: PropTypes.string,
+interface SocialIcon {
+  name: string
+  icon?: string | { url: string }
+  src?: string
+  href?: string
 }
 
-function SocialLinks({ icons = [] }) {
+interface SocialLinksProps {
+  icons?: SocialIcon[]
+}
+
+function SocialLinks({ icons = [] }: SocialLinksProps) {
   return (
     <div className="flex space-x-4">
       {icons.map((icon) => {
@@ -101,18 +111,17 @@ function SocialLinks({ icons = [] }) {
   )
 }
 
-SocialLinks.propTypes = {
-  icons: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      icon: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({ url: PropTypes.string })]),
-      src: PropTypes.string,
-      href: PropTypes.string,
-    })
-  ),
+interface Brand {
+  name?: string
+  description?: string
 }
 
-function BrandSection({ brand, socialIcons }) {
+interface BrandSectionProps {
+  brand?: Brand
+  socialIcons?: SocialIcon[]
+}
+
+function BrandSection({ brand, socialIcons }: BrandSectionProps) {
   return (
     <div className="col-span-2 sm:col-span-1">
       <h3 className="text-2xl font-bold mb-4">{brand?.name || 'SHOP.CO'}</h3>
@@ -125,15 +134,21 @@ function BrandSection({ brand, socialIcons }) {
   )
 }
 
-BrandSection.propTypes = {
-  brand: PropTypes.shape({
-    name: PropTypes.string,
-    description: PropTypes.string,
-  }),
-  socialIcons: SocialLinks.propTypes.icons,
+interface FooterLink {
+  label: string
+  href?: string
 }
 
-function FooterLinkSection({ section }) {
+interface FooterSection {
+  title: string
+  links: (string | FooterLink)[]
+}
+
+interface FooterLinkSectionProps {
+  section: FooterSection
+}
+
+function FooterLinkSection({ section }: FooterLinkSectionProps) {
   const links = toLinks(section.links)
 
   return (
@@ -141,12 +156,12 @@ function FooterLinkSection({ section }) {
       <h4 className="text-sm font-semibold mb-4 uppercase">{section.title}</h4>
       <ul className="space-y-2">
         {links.map((link) => (
-          <li key={typeof link === 'string' ? link : link.label}>
+          <li key={link.label}>
             <Link
-              href={(link && link.href) || '#'}
+              href={link.href || '#'}
               className="text-gray-600 hover:text-black transition-colors"
             >
-              {typeof link === 'string' ? link : link.label}
+              {link.label}
             </Link>
           </li>
         ))}
@@ -155,22 +170,11 @@ function FooterLinkSection({ section }) {
   )
 }
 
-FooterLinkSection.propTypes = {
-  section: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    links: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.string),
-      PropTypes.arrayOf(
-        PropTypes.shape({
-          label: PropTypes.string.isRequired,
-          href: PropTypes.string,
-        })
-      ),
-    ]).isRequired,
-  }).isRequired,
+interface FooterLinksGridProps {
+  sections?: FooterSection[]
 }
 
-function FooterLinksGrid({ sections = [] }) {
+function FooterLinksGrid({ sections = [] }: FooterLinksGridProps) {
   return (
     <>
       {sections.map((section) => (
@@ -180,11 +184,17 @@ function FooterLinksGrid({ sections = [] }) {
   )
 }
 
-FooterLinksGrid.propTypes = {
-  sections: PropTypes.arrayOf(FooterLinkSection.propTypes.section),
+interface PaymentMethod {
+  name: string
+  icon?: string | { url: string }
+  src?: string
 }
 
-function PaymentMethods({ methods = [] }) {
+interface PaymentMethodsProps {
+  methods?: PaymentMethod[]
+}
+
+function PaymentMethods({ methods = [] }: PaymentMethodsProps) {
   return (
     <div className="flex items-center space-x-2">
       {methods.map((m) => {
@@ -200,17 +210,12 @@ function PaymentMethods({ methods = [] }) {
   )
 }
 
-PaymentMethods.propTypes = {
-  methods: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      icon: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({ url: PropTypes.string })]),
-      src: PropTypes.string,
-    })
-  ),
+interface CopyrightSectionProps {
+  text?: string
+  paymentMethods?: PaymentMethod[]
 }
 
-function CopyrightSection({ text, paymentMethods }) {
+function CopyrightSection({ text, paymentMethods }: CopyrightSectionProps) {
   return (
     <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
       <p className="text-gray-500 text-sm mb-4 md:mb-0">
@@ -221,13 +226,23 @@ function CopyrightSection({ text, paymentMethods }) {
   )
 }
 
-CopyrightSection.propTypes = {
-  text: PropTypes.string,
-  paymentMethods: PaymentMethods.propTypes.methods,
+/* ---------------- Main Footer ---------------- */
+interface FooterProps {
+  data?: {
+    brand?: Brand
+    newsletter?: {
+      title?: string
+      placeholder?: string
+      buttonText?: string
+    }
+    socialIcons?: SocialIcon[]
+    paymentMethods?: PaymentMethod[]
+    footerSections?: FooterSection[]
+    copyright?: string
+  }
 }
 
-/* ---------------- Main Footer ---------------- */
-export default function Footer({ data }) {
+export default function Footer({ data }: FooterProps) {
   const {
     brand,
     newsletter,
@@ -257,22 +272,4 @@ export default function Footer({ data }) {
       </footer>
     </div>
   )
-}
-
-Footer.propTypes = {
-  data: PropTypes.shape({
-    brand: PropTypes.shape({
-      name: PropTypes.string,
-      description: PropTypes.string,
-    }),
-    newsletter: PropTypes.shape({
-      title: PropTypes.string,
-      placeholder: PropTypes.string,
-      buttonText: PropTypes.string,
-    }),
-    socialIcons: SocialLinks.propTypes.icons,
-    paymentMethods: PaymentMethods.propTypes.methods,
-    footerSections: FooterLinksGrid.propTypes.sections,
-    copyright: PropTypes.string,
-  }),
 }

@@ -1,7 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import Image from 'next/image'
 import StarRating from '@/components/Itemcard/Starrating/index'
+
+interface ItemCardProps {
+  name?: string
+  price?: number
+  originalPrice?: number | null
+  discount?: number | null
+  rating?: number
+  image?: string | { url: string }
+  onClick?: () => void
+  className?: string
+  showDiscountTag?: boolean
+}
 
 export default function ItemCard({
   name = 'T-shirt with Tape Details',
@@ -13,7 +24,7 @@ export default function ItemCard({
   onClick = () => {},
   className = '',
   showDiscountTag = true,
-}: any) {
+}: ItemCardProps) {
   const discountPercent =
     discount ??
     (originalPrice && price ? Math.round(((originalPrice - price) / originalPrice) * 100) : null)
