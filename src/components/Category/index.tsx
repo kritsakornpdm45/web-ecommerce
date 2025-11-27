@@ -2,11 +2,18 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-interface Category {
-  id: string
+interface Media {
+  id: string | number
+  url?: string | null
+  alt?: string | null
+  [key: string]: any
+}
+
+export interface Category {
+  id: string | number
   name: string
   slug: string
-  image?: string | { url: string }
+  image?: string | number | Media | null
 }
 
 interface CategoryGridProps {
@@ -44,14 +51,14 @@ export default function CategoryGrid({ data, className = "" }: CategoryGridProps
 }
 
 interface CategoryCardProps {
-  id: string
+  id: string | number
   title: string
   href: string
-  image?: string | { url: string }
+  image?: string | number | Media | null
 }
 
 function CategoryCard({ id, title, href, image }: CategoryCardProps) {
-  const imageUrl = typeof image === "object" && image?.url ? image.url : (image as string);
+  const imageUrl = typeof image === "object" && image?.url ? image.url : (typeof image === 'string' ? image : null);
 
   return (
     <div

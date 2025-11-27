@@ -2,11 +2,15 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
+interface Media {
+  id: string | number
+  url?: string | null
+  alt?: string | null
+  [key: string]: any
+}
+
 interface HomeBannerData {
-  homeBannerImage?: {
-    url: string
-    alt: string
-  }
+  homeBannerImage?: number | Media
   mainTitle?: string
   subTitle?: string
   buttonText?: string
@@ -28,15 +32,18 @@ const Homebanner = ({ data }: HomebannerProps) => {
     buttonLink,
   } = data
 
+  const imageUrl = typeof homeBannerImage === 'object' ? homeBannerImage?.url : null
+  const imageAlt = typeof homeBannerImage === 'object' ? homeBannerImage?.alt : 'Banner Image'
+
   return (
     <header className="relative min-h-screen md:min-h-[42rem] overflow-hidden bg-gray-100">
       {/* Background Image with padding */}
       <div className="absolute inset-0 z-0 p-1 md:p-8">
         <div className="w-full h-full relative rounded-lg overflow-hidden">
-          {homeBannerImage?.url && (
+          {imageUrl && (
             <Image
-              src={homeBannerImage.url}
-              alt={homeBannerImage.alt || 'Banner Image'}
+              src={imageUrl}
+              alt={imageAlt || 'Banner Image'}
               fill
               className="object-cover rounded-lg"
               priority

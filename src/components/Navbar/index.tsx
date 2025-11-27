@@ -16,11 +16,18 @@ interface NavItem {
 }
 
 const mapNav = (list: any[]): NavItem[] =>
-  (Array.isArray(list) ? list : []).map((n, i) => ({
-    key: String(n?.id ?? n?.path ?? n?.url ?? i),
-    label: String(n?.text ?? '').trim(),
-    url: String(n?.path ?? n?.url ?? '#'),
-  }))
+  (Array.isArray(list) ? list : []).map((n, i) => {
+    let url = String(n?.path ?? n?.url ?? '#')
+    // Fix specific path issues
+    if (url.toLowerCase() === '/aboutus') {
+      url = '/about-us'
+    }
+    return {
+      key: String(n?.id ?? n?.path ?? n?.url ?? i),
+      label: String(n?.text ?? '').trim(),
+      url,
+    }
+  })
 
 /* --------------------------- sub-components --------------------------- */
 interface MobileMenuProps {

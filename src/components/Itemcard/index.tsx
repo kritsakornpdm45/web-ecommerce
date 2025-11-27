@@ -7,7 +7,7 @@ interface ItemCardProps {
   price?: number
   originalPrice?: number | null
   discount?: number | null
-  rating?: number
+  rating?: number | null
   image?: string | { url: string }
   onClick?: () => void
   className?: string
@@ -49,7 +49,7 @@ export default function ItemCard({
       <h3 className="font-medium font-primary text-sm md:text-lg mb-1">{name}</h3>
 
       <div className="mb-2">
-        <StarRating rating={rating} />
+        <StarRating rating={rating ?? 0} />
       </div>
 
       <div className="flex items-center">

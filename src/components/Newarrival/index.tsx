@@ -1,12 +1,19 @@
 import React from 'react'
 import ItemCard from '../Itemcard'
 
+interface Media {
+  id: string | number
+  url?: string | null
+  alt?: string | null
+  [key: string]: any
+}
+
 interface Product {
   name: string
   price: number
-  originalPrice?: number
-  rating?: number
-  imageList: { image: { url: string } }[]
+  originalPrice?: number | null
+  rating?: number | null
+  imageList?: { image: number | Media }[] | null
 }
 
 interface NewArrivalGridProps {
@@ -25,16 +32,21 @@ export default function NewArrivalGrid({ data }: NewArrivalGridProps) {
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 md:gap-6">
-          {items.map(({ name, price, originalPrice, rating, imageList }, index) => (
-            <ItemCard
-              key={index}
-              name={name}
-              price={price}
-              originalPrice={originalPrice}
-              rating={rating}
-              image={imageList?.[0]?.image?.url}
-            />
-          ))}
+          {items.map(({ name, price, originalPrice, rating, imageList }, index) => {
+            const firstImage = imageList?.[0]?.image
+            const imageUrl = typeof firstImage === 'object' ? firstImage?.url : null
+            
+            return (
+              <ItemCard
+                key={index}
+                name={name}
+                price={price}
+                originalPrice={originalPrice}
+                rating={rating}
+                image={imageUrl || undefined}
+              />
+            )
+          })}
         </div>
 
         <div className="text-center mt-8">

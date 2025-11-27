@@ -35,7 +35,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
           <TopNavbar data={posts} />
           <main>{children}</main>
 
-          <Footer data={datas} />
+          <Footer data={datas as any} />
         </body>
       </html>
     </ClientProviders>

@@ -1,4 +1,9 @@
-import type { CategoryItem } from "@/components/Category";
+export interface CategoryItem {
+  id: string
+  title: string
+  image: string
+  href: string
+}
 
 export const categoryMock: CategoryItem[] = [
   {
